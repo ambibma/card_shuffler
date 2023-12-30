@@ -1,11 +1,28 @@
 from tkinter import *
 import random
+from PIL import Image, ImageTk
 
 root = Tk()
 root.title('Cards')
 # root.icontbitmap('~/projects/cards')
 root.geometry('900x500')
 root.configure(background='green')
+
+# Resize Cards
+
+def resize_cards(card):
+    #Open the image
+    
+    our_card_img = Image.open(card)
+    
+    #Rezise the image
+    our_card_resize_img = our_card_img.resize((150, 218))
+    
+    global our_card_image
+    our_card_image = ImageTk.PhotoImage(our_card_resize_img)
+
+    #Return Card
+    return our_card_image
 
 #shuffle the cards
 
@@ -30,7 +47,7 @@ def shuffle():
   dealer= []
   player = []
   
-  #Grab a random Card
+  #Grab a random Card for Dealer
   
   card = random.choice(deck)
   #Remove Card from Deck
@@ -38,15 +55,24 @@ def shuffle():
   #Append Card to Dealer List
   dealer.append(card)
   #output Card to Screen
-  dealer_label.config(text=card)
   
+  global dealer_image
+  dealer_image= resize_cards(f"images/cards/{card}.png")
+  dealer_label.config(image=dealer_image)
+  
+  
+  #Grab a random Card for Player
   card = random.choice(deck)
   #Remove Card from Deck
   deck.remove(card)
   #Append Card to Dealer List
   player.append(card)
   #output Card to Screen
-  player_label.config(text=card)
+  global player_image
+  player_image= resize_cards(f"images/cards/{card}.png")
+  player_label.config(image=player_image)
+  
+  #player_label.config(text=card)
   
   root.title(f'Cards -{len(deck)}')
 
@@ -60,6 +86,9 @@ def deal_cards():
     #Append Card to Dealer List
     dealer.append(card)
     #output Card to Screen
+    global dealer_image
+    dealer_image= resize_cards(f"images/cards/{card}.png")
+    dealer_label.config(image=dealer_image)
     dealer_label.config(text=card)
   
     #Get the player card
@@ -69,7 +98,10 @@ def deal_cards():
     #Append Card to Dealer List
     player.append(card)
     #output Card to Screen
-    player_label.config(text=card)
+    global player_image
+    player_image= resize_cards(f"images/cards/{card}.png")
+    player_label.config(image=player_image)
+    #player_label.config(text=card)
     
     root.title(f'Cards -{len(deck)}')
   
@@ -103,4 +135,7 @@ shuffle_button.pack(pady=20)
 card_button = Button(root, text="Get Cards", font=("Helvetica", 14), command =deal_cards)
 card_button.pack(pady=20)
 
+
+
+shuffle()
 root.mainloop()
